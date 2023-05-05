@@ -13,15 +13,11 @@ Tik Tok downloader v 2.0
 sleep 1
 
 
-
-# Asignamos una variable al folder donde se guardaran los videos descargados
-descarga_folder="$(xdg-user-dir VIDEOS)"
-
 # Definimos una función que escucha los enlaces del portapapeles y los guarda en un archivo
 function listen_links {
-    # Pedimos al usuario que ingrese el nombre del archivo de salida
-    read -p "Ingresa el nombre del archivo de salida: " output_file
-
+    # creamos el archivo de salida
+    output_file="fromclipboard_$(date '+%Y-%m-%d').list"
+    touch "$output_file"
     # Creamos el archivo de salida y escribimos la primera línea
     echo "Historial del clipboard:" >> "$output_file"
 
@@ -86,7 +82,7 @@ function codeRaw {
     # Pedimos al usuario que ingrese el nombre del archivo de entrada
     read -p "Ingresa el nombre del archivo de enlaces: " input_file
     # Creamos el archivo de salida
-    output_file="videos_$(date '+%Y-%m-%d').list"
+    output_file="fromcode_$(date '+%Y-%m-%d').list"
     touch "./$output_file"
 
     grep -Eo '<a href="https://www\.tiktok\.com/@[^/]+/video/[^/]+" tabindex="-1">' $input_file|sed 's/tabindex="-1">//g'|sed 's/<a href="//g'|sed 's/"//g'|tee "./$output_file"
@@ -94,7 +90,7 @@ function codeRaw {
     conteo=$(wc -l $output_file)
 
     echo "se han obtenido $conteo enlaces, favor de checar cuales son utiles."
-    code $4output_file
+    code $output_file
 
 
 }
