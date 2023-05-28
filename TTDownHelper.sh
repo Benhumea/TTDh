@@ -56,8 +56,8 @@ function download_videos {
     # Pedimos al usuario que ingrese el directorio de salida para los videos descargados
     read -p "Ingresa el directorio de salida para los videos descargados: " output_dir
 
-    # Definimos el ultimo numero que se utilizara para nombrar a los archivos
-    ultimoNumero=$(find /media/walky/checar/tiktoks /media/walky/checar/TTclasificados /home/walky/Documentos/videos -type f -name "*.mp4" | wc -l)
+    # Definimos el ultimo numero que se utilizara para nombrar a los archivos en find encontramos varias rutas debido a que aho checa para comenzar a enumerar se pueden quitar rutas o incluso poner otras /home/walky/Documentos/videos
+    ultimoNumero=$(find /media/walky/checar/tiktok -type f -name "*.mp4" | wc -l)
     ultimoNumero=$((ultimoNumero+1))
 
     # contamos cuantos videos se descargaran 
@@ -71,7 +71,10 @@ function download_videos {
     # Descargamos los videos con la mejor calidad disponible
     echo "Descargando videos $conteoVideosLista en la mejor calidad disponible"
 # Download the video in the selected format
-yt-dlp -a "$input_file" -f best -o "$output_dir/%(autonumber)s.%(ext)s"  --autonumber-start $ultimoNumero
+#la siguiente linea le da un numero y el nombre del creador
+#yt-dlp -a "$input_file" -f best -o "$output_dir/%(uploader)s_%(autonumber)s.%(ext)s"  --autonumber-start $ultimoNumero
+#le da el nombre del creador y el id del video
+yt-dlp -a "$input_file" -f best -o "$output_dir/%(uploader)s_%(id)s.%(ext)s"
 
 }
 
@@ -82,7 +85,7 @@ function codeRaw {
     # Pedimos al usuario que ingrese el nombre del archivo de entrada
     read -p "Ingresa el nombre del archivo de enlaces: " input_file
     # Creamos el archivo de salida
-    output_file="fromcode_$(date '+%Y-%m-%d').list"
+    output_file="fromcode_$(date '+%Y-%m-%d+%H%M').list"
     touch "./$output_file"
 
     grep -Eo '<a href="https://www\.tiktok\.com/@[^/]+/video/[^/]+" tabindex="-1">' $input_file|sed 's/tabindex="-1">//g'|sed 's/<a href="//g'|sed 's/"//g'|tee "./$output_file"
